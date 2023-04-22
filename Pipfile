@@ -8,6 +8,7 @@ fastapi = "*"
 uvicorn = "*"
 starlette = "*"
 python-multipart = "*"
+jinja2 = "*"
 
 [dev-packages]
 

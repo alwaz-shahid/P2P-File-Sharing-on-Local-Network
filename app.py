@@ -1,8 +1,16 @@
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, UploadFile, Request
 from starlette.responses import FileResponse
+from fastapi.templating import Jinja2Templates
 import os
+import shutil
 
 app = FastAPI()
+templates = Jinja2Templates(directory="templates")
+
+@app.get("/")
+async def home(request: Request):
+    files = os.listdir("uploads/")
+    return templates.TemplateResponse("index.html", {"request": request, "files": files})
 
 @app.post("/uploadfile/")
 async def create_upload_file(file: UploadFile = File(...)):
@@ -32,7 +40,4 @@ def create_app():
     return app
 
 if __name__ == '__main__':
-    import shutil
-    import uvicorn
-
     uvicorn.run("app:create_app", host="0.0.0.0", port=8000, reload=True)
