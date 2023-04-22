@@ -27,10 +27,12 @@ async def share_file(filename: str, target_ip: str):
     # Code to transfer file to target IP using sockets or another networking library
     return {"message": f"File {filename} has been shared with {target_ip}"}
 
+def create_app():
+    os.makedirs("uploads", exist_ok=True)
+    return app
+
 if __name__ == '__main__':
     import shutil
     import uvicorn
 
-    os.makedirs("uploads", exist_ok=True)
-
-    uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("app:create_app", host="0.0.0.0", port=8000, reload=True)
