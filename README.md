@@ -21,11 +21,13 @@
 
 - Install dependencies: Navigate to the project directory and run the following command to install the dependencies:
 
-- pip install -r requirements.txt
+- **pipenv install**
 
 - Run the application: Run the following command to start the application:
 
-- uvicorn app:app --reload
+- **uvicorn app:app --reload**
+
+- or simply run **python app.py**
 
 - Test the application: Open a web browser and go to http://localhost:8000/docs to access the Swagger UI for the API. You can upload a file, download a file, list all files in the uploads directory, and share a file by specifying the target IP address.
 
