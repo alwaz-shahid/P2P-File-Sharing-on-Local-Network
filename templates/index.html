@@ -1,21 +1,129 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>File Sharing App</title>
-  </head>
-  <body>
-    <h1>File Sharing App</h1>
-    <form action="/uploadfile/" method="post" enctype="multipart/form-data">
-      <label for="file">Choose a file to upload:</label><br />
-      <input type="file" id="file" name="file" /><br /><br />
-      <input type="submit" value="Upload" />
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Sharing</title>
+    <style>
+         body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input[type="file"] {
+            margin-right: 10px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background-color: #fff;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        a {
+            text-decoration: none;
+            color: #007BFF;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .preview {
+            max-width: 100px;
+            max-height: 100px;
+            margin-right: 10px;
+        }
+    </style>
+    <script>
+        function validateFile() {
+            const fileInput = document.querySelector('input[type="file"]');
+            const file = fileInput.files[0];
+            const maxSize = 5 * 1024 * 1024; // 5 MB
+            const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+
+            if (file) {
+                if (file.size > maxSize) {
+                    alert('File size exceeds 5 MB');
+                    return false;
+                }
+                // if (!allowedTypes.includes(file.type)) {
+                //     alert('File type not allowed');
+                //     return false;
+                // }
+            }
+            return true;
+        }
+
+        function previewFile(file) {
+            const previewContainer = document.getElementById('previewContainer');
+            previewContainer.innerHTML = '';
+
+            if (file.type.startsWith('image/')) {
+                const img = document.createElement('img');
+                img.src = URL.createObjectURL(file);
+                img.className = 'preview';
+                previewContainer.appendChild(img);
+            } else if (file.type === 'application/pdf') {
+                const iframe = document.createElement('iframe');
+                iframe.src = URL.createObjectURL(file);
+                iframe.className = 'preview';
+                previewContainer.appendChild(iframe);
+            }
+        }
+
+        document.querySelector('input[type="file"]').addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                previewFile(file);
+            }
+        });
+    </script>
+</head>
+<body>
+    <h1>File Sharing Application</h1>
+    <h2>Upload a File</h2>
+    <form action="/uploadfile/" enctype="multipart/form-data" method="post" onsubmit="return validateFile()">
+        <input type="file" name="file">
+        <button type="submit">Upload</button>
     </form>
-    <br />
-    <h2>Download Files</h2>
+
+    <div id="previewContainer"></div>
+
+    <h2>Available Files</h2>
     <ul>
-      {% for filename in files %}
-      <li><a href="/downloadfile/{{ filename }}">{{ filename }}</a></li>
-      {% endfor %}
+        {% for file in files %}
+        <li>
+            <span>{{ file }}</span>
+            <a href="/downloadfile/{{ file }}">Download</a>
+            <form action="/deletefile/{{ file }}" method="post" style="display:inline;">
+                <button type="submit">Delete</button>
+            </form>
+        </li>
+        {% endfor %}
     </ul>
-  </body>
+</body>
 </html>
